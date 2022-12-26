@@ -1,58 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useCallback, useState } from "react";
+import { initialData } from "./initialDate";
+import { Column } from "./Column";
+import { IState } from "./interfaces";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+export function App() {
+  const [state, setState] = useState<IState>(initialData);
+
+  const handleOnDragEnd = useCallback((result: DropResult) => {}, []);
+
+  const res = state.columnOrder.map((columnId) => {
+    const column = state.columns[columnId];
+    const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
+    return <Column key={column.id} column={column} tasks={tasks} />;
+  });
+
+  return <DragDropContext onDragEnd={handleOnDragEnd}>{res}</DragDropContext>;
 }
-
-export default App;
